@@ -1,0 +1,19 @@
+{
+  "name": "bas-bots",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^24.9.2",
+    "drizzle-kit": "^0.31.6",
+    "ts-node": "^10.9.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.44.7",
+    "playwright": "^1.56.1"
+  }
+}
