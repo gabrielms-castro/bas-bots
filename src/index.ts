@@ -12,6 +12,5 @@ Bun.serve({
         //     POST: withConfig(config, handlerLogin),
         // }
     },
-    
-})
+});
 console.log(`Server running at http://localhost:${config.port}`);
