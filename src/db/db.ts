@@ -12,8 +12,8 @@ function autoMigrate(db: Database) {
         id TEXT PRIMARY KEY,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        password TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL
       );
     `;
   db.run(usersTable);
