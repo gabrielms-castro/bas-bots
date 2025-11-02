@@ -1,12 +1,14 @@
 import { Database } from "bun:sqlite";
 
 export function newDatabase(pathToDB: string): Database {
+  
   const db = new Database(pathToDB);
   autoMigrate(db)
   return db
 }
 
 function autoMigrate(db: Database) {
+  console.log("Starting migration...");
   const usersTable = `
       CREATE TABLE IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
@@ -45,6 +47,7 @@ function autoMigrate(db: Database) {
     );
   `;
   db.run(credentialsTable)
+  console.log("Database migrations: success!");
 }
 
 export function reset(db: Database) {

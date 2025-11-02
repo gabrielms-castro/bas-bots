@@ -91,6 +91,21 @@ h2 {
   text-align: center;
 }
 
+#signup-section {
+  max-width: 420px;
+  margin: 8vh auto;
+  padding: 28px 24px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00)) , var(--card);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  
+}
+
+#signup-title {
+  text-align: center;
+}
+
 .nav-bar {
   display: flex;
   justify-content: space-between;

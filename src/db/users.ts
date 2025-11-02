@@ -5,16 +5,16 @@ export type User = {
     id: UUID,
     createdAt: Date,
     updatedAt: Date,
-    password: string,
     email: string
+    password: string,
 }
 
 type UserRow = {
-  id: UUID;
-  created_at: string;
-  updated_at: string;
-  email: string;
-  password: string;
+    id: UUID;
+    created_at: Date;
+    updated_at: Date;
+    email: string;
+    password: string;
 }; 
 
 export type CreateUserParams = {
@@ -22,10 +22,12 @@ export type CreateUserParams = {
     password: string
 }
 
+export type UserResponse = Omit<UserRow, 'password'>
+
 export async function createUser(db: Database, params: CreateUserParams): Promise<User | undefined> {
     const newID = randomUUID()
     const sql = `
-        INSER INTO users (id, created_at, updated_at, email, password)
+        INSERT INTO users (id, created_at, updated_at, email, password)
         VALUES (?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?)
     `;
     db.run(sql, [newID, params.email, params.password])
@@ -42,8 +44,8 @@ export async function getUsers(db: Database) {
     for (const row of query.iterate()) {
         users.push({
             id: row.id,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: new Date(row.created_at),
+            updatedAt: new Date(row.updated_at),
             email: row.email,
             password: "",
         });

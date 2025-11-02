@@ -2,7 +2,7 @@ import { newDatabase } from "./db/db";
 import type { Database } from "bun:sqlite";
 
 export type ApiConfig = {
-  db?: Database
+  db: Database
   jwtSecret: string
   port: string
   platform: string
