@@ -1,21 +1,65 @@
-<!doctype html>
-<html lang="pt-br">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>BAS Bots</title>
-        <link rel="stylesheet" href="styles.css" />
-        <!-- <script type="module" src="app.js"></script> -->
-    </head>
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BAS Bots - MVP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="nav-bar">
+      <h1>BAS Bots</h1>
+      <button id="logout-button" class="btn">Logout</button>
+    </header>
+    <section id="auth-section" aria-labelledby="auth-title">
+      <h2 id="auth-title">Login</h2>
 
-    <body>
-        <div class="nav-bar">
-            <h1>
-                BAS Bots
-                <span class="subtitle">Plataforma de robôs jurídicos</span>
-            </h1>
-            <button id="logout-button">Sair</button>
+      <form id="login-form" novalidate>
+        <div class="form-field">
+          <input
+            class="input-area"
+            type="email"
+            id="email"
+            name="email"
+            placeholder="email@exemplo.com"
+            autocomplete="email"
+            required
+          />
         </div>
-    </body>
 
+        <div class="form-field">
+          <input
+            class="input-area"
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Senha"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+
+        <div class="form-meta">
+          <label>
+            <input type="checkbox" id="remember" name="remember" />
+            Lembrar-me
+          </label>
+          <a href="#" rel="nofollow">Esqueci minha senha</a>
+        </div>
+
+        <div class="button-container">
+          <button type="submit" class="btn primary">Login</button>
+          <button id="signup-button" type="button" class="btn">Criar conta</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="dashboard-section">
+    </section>
+
+
+    <script src="./app.js"></script>
+  </body>
 </html>
