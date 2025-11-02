@@ -22,4 +22,8 @@ sudo apt update
 sudo apt install sqlite3
 ```
 
+### 4) Inicie o server
+```sh
+bun run src/index.ts
+```
 
