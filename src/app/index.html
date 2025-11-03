@@ -11,91 +11,93 @@
   <body>
     <header class="nav-bar">
       <h1>BAS Bots</h1>
-      <button id="logout-button" class="btn" type="button">Logout</button>
+      <button id="logout-button" class="btn" type="button">Sair</button>
     </header>
+    <body>
 
-    <section id="auth-section" aria-labelledby="auth-title">
-      <h2 id="auth-title">Login</h2>
-
-      <form id="login-form" novalidate>
-        <div class="form-field">
-          <input
-            class="input-area"
-            type="email"
-            id="login-email"
-            name="email"
-            placeholder="email@exemplo.com"
-            autocomplete="email"
-            required
-          />
-        </div>
-
-        <div class="form-field">
-          <input
-            class="input-area"
-            type="password"
-            id="login-password"
-            name="password"
-            placeholder="Senha"
-            autocomplete="current-password"
-            required
-          />
-        </div>
-
-        <div class="form-meta">
-          <label>
-            <input type="checkbox" id="remember" name="remember" />
-            Lembrar-me
-          </label>
-          <a href="#" rel="nofollow">Esqueci minha senha</a>
-        </div>
-
-        <div class="button-container">
-          <button type="submit" class="btn primary">Login</button>
-          <button id="go-to-signup" type="button" class="btn">Criar conta</button>
-        </div>
-      </form>
-    </section>
-
-    <section id="signup-section" aria-labelledby="signup-title" hidden>
-      <h2 id="signup-title">Cadastrar</h2>
-
-      <form id="signup-form" novalidate>
-        <div class="form-field">
-          <input
-            class="input-area"
-            type="email"
-            id="signup-email"
-            name="email"
-            placeholder="email@exemplo.com"
-            autocomplete="email"
-            required
-          />
-        </div>
-
-        <div class="form-field">
-          <input
-            class="input-area"
-            type="password"
-            id="signup-password"
-            name="password"
-            placeholder="Senha"
-            autocomplete="new-password"
-            required
-          />
-        </div>
-
-        <div class="button-container">
-          <button type="submit" class="btn primary">Criar conta</button>
-          <button id="back-to-login" type="button" class="btn">Voltar</button>
-        </div>
-      </form>
-    </section>
-
-    <section id="dashboard-section" hidden>
-      <!-- conteúdo do dashboard -->
-      <p>Bem-vindo ao BAS Bots!</p>
-    </section>
+      <section id="auth-section" aria-labelledby="auth-title">
+        <h2 id="auth-title">Entrar</h2>
+  
+        <form id="login-form" novalidate>
+          <div class="form-field">
+            <input
+              class="input-area"
+              type="email"
+              id="login-email"
+              name="email"
+              placeholder="email@exemplo.com"
+              autocomplete="email"
+              required
+            />
+          </div>
+  
+          <div class="form-field">
+            <input
+              class="input-area"
+              type="password"
+              id="login-password"
+              name="password"
+              placeholder="Senha"
+              autocomplete="current-password"
+              required
+            />
+          </div>
+  
+          <div class="form-meta">
+            <label>
+              <input type="checkbox" id="remember" name="remember" />
+              Lembrar-me
+            </label>
+            <a href="#" rel="nofollow">Esqueci minha senha</a>
+          </div>
+  
+          <div class="button-container">
+            <button type="submit" class="btn primary">Entrar</button>
+            <button id="go-to-signup" type="button" class="btn">Criar conta</button>
+          </div>
+        </form>
+      </section>
+  
+      <section id="signup-section" aria-labelledby="signup-title" hidden>
+        <h2 id="signup-title">Cadastrar</h2>
+  
+        <form id="signup-form" novalidate>
+          <div class="form-field">
+            <input
+              class="input-area"
+              type="email"
+              id="signup-email"
+              name="email"
+              placeholder="email@exemplo.com"
+              autocomplete="email"
+              required
+            />
+          </div>
+  
+          <div class="form-field">
+            <input
+              class="input-area"
+              type="password"
+              id="signup-password"
+              name="password"
+              placeholder="Senha"
+              autocomplete="new-password"
+              required
+            />
+          </div>
+  
+          <div class="button-container">
+            <button type="submit" class="btn primary">Criar conta</button>
+            <button id="back-to-login" type="button" class="btn">Voltar</button>
+          </div>
+        </form>
+      </section>
+  
+      <section id="dashboard-section" hidden>
+        <!-- conteúdo do dashboard -->
+        <p>Bem-vindo ao BAS Bots!</p>
+      </section>
+    </body>
 
     <script src="./app.js"></script>
   </body>

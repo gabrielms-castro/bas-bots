@@ -27,3 +27,6 @@ sudo apt install sqlite3
 bun run src/index.ts
 ```
 
+## Features
+* Execução de bots via API se necessário
+* Controle de credenciais a serem usadas pelos bots definidos e vinculados por usuário
