@@ -87,12 +87,12 @@ export async function getUserByID(db: Database, id: UUID) {
     }
 }
 
-export async function getUserByRefreshToken(db: Database, token: string) {
+export async function getUserByRefreshToken(db: Database, token: string): Promise<User | undefined> {
     const sql = `
         SELECT u.id, u.email, u.created_at, u.updated_at, u.password
         FROM users u
         JOIN refresh_tokens rt
-        ON u.id = rt.user_id;
+        ON u.id = rt.user_id
         WHERE rt.token = ?
     `;
     const row = db.query<UserRow, [string]>(sql).get(token)
