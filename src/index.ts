@@ -1,9 +1,10 @@
-import { handlerLogin } from "./api/auth";
+import { handlerLogin, handlerRefreshToken, handlerRevoke } from "./api/auth";
 import { errorHandlingMiddleware, withConfig } from "./api/middleware";
 import { config } from "./config";
 import { handlerCreateUser } from "./api/users";
 
 import spa from "./app/index.html"
+import { handlerReset } from "./api/reset";
 Bun.serve({
     port: Number(config.port),
     development: config.platform === 'dev',
@@ -14,7 +15,16 @@ Bun.serve({
         },
         "/api/users": {
             POST: withConfig(config, handlerCreateUser),
-        }
+        },
+        "/api/refresh": {
+            POST: withConfig(config, handlerRefreshToken),
+        },
+        "/api/revoke": {
+            POST: withConfig(config, handlerRevoke),
+        },
+        "/api/reset": {
+            POST: withConfig(config, handlerReset),
+        },
     },
     error(err) {
         return errorHandlingMiddleware(config, err)

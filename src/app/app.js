@@ -40,12 +40,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Estado inicial
-//   const token = localStorage.getItem("token");
-//   if (token) {
-//     showDashboard();
-//   } else {
-//     showLogin();
-//   }
+  const token = localStorage.getItem("token");
+  if (token) {
+    showDashboard();
+  } else {
+    showLogin();
+  }
 
   // Navegação entre telas
   goToSignupBtn.addEventListener("click", () => {
@@ -97,11 +97,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       showDashboard();
 
-    //   if (data?.token) {
-    //     localStorage.setItem("token", data.token);
-    //   } else {
-    //     alert("Credenciais inválidas.");
-    //   }
+      if (data?.token) {
+        localStorage.setItem("token", data.token);
+      } else {
+        alert("Credenciais inválidas.");
+      }
     } catch (err) {
       console.error(err);
       alert(`Erro: ${err.message}`);

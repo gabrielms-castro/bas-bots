@@ -1,10 +1,10 @@
 import type { BunRequest } from "bun";
 import type { ApiConfig } from "../config";
 import { BadRequestError, NotFoundError, UserNotAuthenticatedError } from "./errors";
-import { getUserByEmail } from "../db/users";
-import { checkPasswordHash, makeJWT, makeRefreshToken } from "../auth";
+import { getUserByEmail, getUserByRefreshToken, type UserResponse } from "../db/users";
+import { checkPasswordHash, getBearerToken, makeJWT, makeRefreshToken } from "../auth";
 import { respondWithJSON } from "./json";
-import { createRefreshToken } from "../db/refresh-tokens";
+import { createRefreshToken, revokeRefreshToken } from "../db/refresh-tokens";
 
 export async function handlerLogin(config: ApiConfig, req: BunRequest) {
     const { email, password } = await req.json();
@@ -33,9 +33,43 @@ export async function handlerLogin(config: ApiConfig, req: BunRequest) {
         expiresAt: new Date(Date.now() + refreshExpiresMs)
     })
 
+    const userResponse = {
+        id: user.id,
+        email: user.email,
+        created_at: user.createdAt,
+        updated_at: user.updatedAt
+    } satisfies UserResponse
     return respondWithJSON(200,{
-        user,
+        user: userResponse,
         token: accessToken,
         refreshToken: refreshToken
+    });
+}
+
+export async function handlerRefreshToken(config: ApiConfig, req: BunRequest) {
+    const refreshToken = getBearerToken(req.headers) as string;
+    const user = await getUserByRefreshToken(config.db, refreshToken)
+    if (!user) {
+        throw new UserNotAuthenticatedError("Invalid or expired refresh token")
+    }
+    const oneHourMs = 60*60*1000;
+    const accessToken = makeJWT(user.id, config.jwtSecret, oneHourMs);
+
+    const userResponse = {
+        id: user.id,
+        email: user.email,
+        created_at: user.createdAt,
+        updated_at: user.updatedAt
+    } satisfies UserResponse
+
+    return respondWithJSON(200, {
+        user: userResponse,
+        token: accessToken
     })
+}
+
+export async function handlerRevoke(config: ApiConfig, req: BunRequest) {
+    const refreshToken = getBearerToken(req.headers) as string;
+    await revokeRefreshToken(config.db, refreshToken)
+    return respondWithJSON(204, {})
 }
