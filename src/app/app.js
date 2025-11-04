@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const body = document.body;
   const authSection = document.getElementById("auth-section");
   const signupSection = document.getElementById("signup-section");
   const dashboardSection = document.getElementById("dashboard-section");
@@ -19,6 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showLogin() {
+    body.classList.remove('body--app')
+    body.classList.add('body--auth')
     show(authSection);
     hide(signupSection);
     hide(dashboardSection);
@@ -26,6 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showSignup() {
+    body.classList.remove('body--app')
+    body.classList.add('body--auth')
     hide(authSection);
     show(signupSection);
     hide(dashboardSection);
@@ -33,6 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showDashboard() {
+    body.classList.remove('body--auth')
+    body.classList.add('body--app')
     hide(authSection);
     hide(signupSection);
     show(dashboardSection);
