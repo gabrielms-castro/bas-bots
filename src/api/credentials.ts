@@ -2,7 +2,7 @@ import { password, type BunRequest } from "bun";
 import type { ApiConfig } from "../config";
 import { respondWithJSON } from "./json";
 import { BadRequestError, UserNotAuthenticatedError } from "./errors";
-import { createCredential, deleteCredential, getCredentialByID, getCredentialByName, updateCredential, type UpdateCredentialParams } from "../db/credentials";
+import { createCredential, deleteCredential, getCredentialByID, getCredentialByName, getCredentials, updateCredential, type UpdateCredentialParams } from "../db/credentials";
 import { getBearerToken, validateJWT } from "../auth";
 
 export async function handlerCreateCredential(config: ApiConfig, req: BunRequest) {
@@ -12,12 +12,13 @@ export async function handlerCreateCredential(config: ApiConfig, req: BunRequest
         throw new UserNotAuthenticatedError("Invalid token")
     }
 
-    const { credentialName, login, password } = await req.json();
-    if (!credentialName || !login || !password) {
+    const { groupName, credentialName, login, password } = await req.json();
+    if (!groupName ||!credentialName || !login || !password) {
         throw new BadRequestError("Por favor, insira um nome para a credencial, login e senha")
     }
 
     const result = await createCredential(config.db, {
+        groupName: groupName,
         credentialName: credentialName,
         login: login,
         password: password,
@@ -37,8 +38,13 @@ export async function handlerGetCredential(config: ApiConfig, req: BunRequest) {
     if (!userID) throw new UserNotAuthenticatedError("Invalid token");
 
     const url = new URL(req.url);
-    const credentialName = url.searchParams.get("credentialName") || "";
-    if (!credentialName) throw new BadRequestError("Forneça o nome de uma credencial cadastrada");
+    const credentialName = url.searchParams.get("credentialName");
+    
+    if (!credentialName) {
+        const credentials = await getCredentials(config.db, userID);
+        if (!credentials) throw new BadRequestError("Credencial não encontrada");
+            return respondWithJSON(200, credentials);
+    }
 
     const credential = await getCredentialByName(config.db, userID, credentialName);
     if (!credential) throw new BadRequestError("Credencial não encontrada");

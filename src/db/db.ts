@@ -38,6 +38,7 @@ function autoMigrate(db: Database) {
       id TEXT PRIMARY KEY,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      group_name TEXT NOT NULL,
       credential_name TEXT NOT NULL,      
       login TEXT NOT NULL,
       password TEXT NOT NULL,

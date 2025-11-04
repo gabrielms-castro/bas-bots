@@ -1,11 +1,11 @@
 import type { Database } from "bun:sqlite";
 import { randomUUID, type UUID } from "crypto";
-import type { StringMappingType } from "typescript";
 
 type Credential = {
     id: UUID,
     createdAt: Date,
     updatedAt: Date,
+    groupName: string,
     credentialName: string,
     login: string,
     password: string,
@@ -16,6 +16,7 @@ type CredentialRow = {
     id: UUID,
     created_at: Date,
     updated_at: Date,
+    group_name: string,
     credential_name: string,
     login: string,
     password: string,
@@ -23,6 +24,7 @@ type CredentialRow = {
 }
 
 type CreateCredentialParams = {
+    groupName: string,
     credentialName: string,
     login: string,
     password: string,
@@ -38,13 +40,36 @@ export type UpdateCredentialParams = {
 export async function createCredential(db: Database, params: CreateCredentialParams): Promise<Credential | undefined> {
     const newCredentialID = randomUUID();
     const sql = `
-        INSERT INTO credentials (id, created_at, updated_at, credential_name, login, password, user_id)
-        VALUES (?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?)
+        INSERT INTO credentials (id, created_at, updated_at, group_name, credential_name, login, password, user_id)
+        VALUES (?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)
     `;
-    db.run(sql, [newCredentialID, params.credentialName, params.login, params.password, params.userID]);
+    db.run(sql, [newCredentialID, params.groupName, params.credentialName, params.login, params.password, params.userID]);
     return await getCredentialByID(db, newCredentialID);
 }
 
+export async function getCredentials(db: Database, userID: string) {
+    const sql = `
+        SELECT *
+        FROM credentials
+        WHERE user_id = ?
+        ORDER BY group_name, credential_name
+    `;
+    const rows = db.query<CredentialRow, [string]>(sql).all(userID);
+    if (!rows) return;
+
+    const credentials: Credential[] = rows.map((row) => ({
+        id: row.id,
+        createdAt: new Date(row.created_at),
+        updatedAt: new Date(row.updated_at),
+        groupName: row.group_name,
+        credentialName: row.credential_name,
+        login: row.login,
+        password: row.password,
+        userID: row.user_id        
+    }));
+
+    return credentials;
+}
 export async function getCredentialByID(db: Database, id: string) {
     const sql = `
         SELECT * 
@@ -57,6 +82,7 @@ export async function getCredentialByID(db: Database, id: string) {
         id: row.id,
         createdAt: new Date(row.created_at),
         updatedAt: new Date(row.updated_at),
+        groupName: row.group_name,
         credentialName: row.credential_name,
         login: row.login,
         password: row.password,
@@ -78,6 +104,7 @@ export async function getCredentialByName(db: Database, userID: string, credenti
         id: row.id,
         createdAt: new Date(row.created_at),
         updatedAt: new Date(row.updated_at),
+        groupName: row.group_name,
         credentialName: row.credential_name,
         login: row.login,
         password: row.password,
@@ -85,9 +112,9 @@ export async function getCredentialByName(db: Database, userID: string, credenti
     }    
 }
 
-export async function updateCredential(db: Database,id: string,userID: string,params: UpdateCredentialParams) {
+export async function updateCredential(db: Database,id: string,userID: string, params: UpdateCredentialParams) {
     const fields: string[] = [];
-    const values: any[] = [];
+    const values: string[] = [];
 
     if (params.credentialName !== undefined) {
         fields.push("credential_name = ?");
@@ -114,11 +141,8 @@ export async function updateCredential(db: Database,id: string,userID: string,pa
         WHERE id = ? AND user_id = ?
     `;
     values.push(id, userID);
-
-    const stmt = db.query(sql);
-    const result = stmt.run(values);
-
-    return { changes: result.changes };
+    
+    return db.run(sql, values)
 }
 
 export async function deleteCredential(db: Database, userID: string, id: string) {
