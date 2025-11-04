@@ -13,13 +13,13 @@ type Credential = {
 }
 
 type CredentialRow = {
-    id: string,
+    id: UUID,
     created_at: Date,
     updated_at: Date,
     credential_name: string,
     login: string,
     password: string,
-    user_id: string
+    user_id: UUID
 }
 
 type CreateCredentialParams = {
@@ -29,14 +29,13 @@ type CreateCredentialParams = {
     userID: string
 }
 
-type UpdateCredentialParams = {
-    credentialName: string,
-    login: string,
-    password: string,
-    userID: string
-}
+export type UpdateCredentialParams = {
+  credentialName?: string;
+  login?: string;
+  password?: string;
+};
 
-export async function createCredential(db: Database, params: CreateCredentialParams) {
+export async function createCredential(db: Database, params: CreateCredentialParams): Promise<Credential | undefined> {
     const newCredentialID = randomUUID();
     const sql = `
         INSERT INTO credentials (id, created_at, updated_at, credential_name, login, password, user_id)
@@ -65,14 +64,16 @@ export async function getCredentialByID(db: Database, id: string) {
     }
 }
 
-export async function getCredentialByName(db: Database, credentialName: string) {
+export async function getCredentialByName(db: Database, userID: string, credentialName: string) {
     const sql = `
         SELECT * 
         FROM credentials
-        WHERE credential_name = ?
+        WHERE user_id = ? AND credential_name = ?
+        LIMIT 1
     `;
-    const row = db.query<CredentialRow, [string]>(sql).get(credentialName);
+    const row = db.query<CredentialRow, [string, string]>(sql).get(userID, credentialName);
     if (!row) return;
+
     return {
         id: row.id,
         createdAt: new Date(row.created_at),
@@ -84,11 +85,38 @@ export async function getCredentialByName(db: Database, credentialName: string) 
     }    
 }
 
-export async function updateCredential(db: Database, params: UpdateCredentialParams) {
+export async function updateCredential(db: Database,id: string,userID: string,params: UpdateCredentialParams) {
+    const fields: string[] = [];
+    const values: any[] = [];
+
+    if (params.credentialName !== undefined) {
+        fields.push("credential_name = ?");
+        values.push(params.credentialName);
+    }
+    
+    if (params.login !== undefined) {
+        fields.push("login = ?");
+        values.push(params.login);
+    }
+    
+    if (params.password !== undefined) {
+        fields.push("password = ?");
+        values.push(params.password);
+    }
+
+    if (fields.length === 0) {
+        return { changes: 0 };
+    }
+
     const sql = `
         UPDATE credentials
-        SET credential_name = ?, login = ?, password = ?
-        WHERE id = ?
+        SET ${fields.join(", ")}, updated_at = CURRENT_TIMESTAMP
+        WHERE id = ? AND user_id = ?
     `;
-    db.run(sql, [params.credentialName, params.login, params.password]);
+    values.push(id, userID);
+
+    const stmt = db.query(sql);
+    const result = stmt.run(values);
+
+    return { changes: result.changes };
 }

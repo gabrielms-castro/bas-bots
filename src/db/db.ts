@@ -39,11 +39,11 @@ function autoMigrate(db: Database) {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       credential_name TEXT NOT NULL,      
-      url TEXT NOT NULL,
       login TEXT NOT NULL,
       password TEXT NOT NULL,
       user_id TEXT NOT NULL,
-      FOREIGN KEY (user_id) REFERENCES users(id)
+      FOREIGN KEY (user_id) REFERENCES users(id),
+      UNIQUE(user_id, credential_name)
     );
   `;
   db.run(credentialsTable)

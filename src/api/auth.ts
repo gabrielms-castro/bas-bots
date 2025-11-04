@@ -1,6 +1,6 @@
 import type { BunRequest } from "bun";
 import type { ApiConfig } from "../config";
-import { BadRequestError, NotFoundError, UserNotAuthenticatedError } from "./errors";
+import { BadRequestError, UserNotAuthenticatedError } from "./errors";
 import { getUserByEmail, getUserByRefreshToken, type UserResponse } from "../db/users";
 import { checkPasswordHash, getBearerToken, makeJWT, makeRefreshToken } from "../auth";
 import { respondWithJSON } from "./json";

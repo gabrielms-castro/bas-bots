@@ -1,8 +1,8 @@
-import type { BunRequest } from "bun";
+import { password, type BunRequest } from "bun";
 import type { ApiConfig } from "../config";
 import { respondWithJSON } from "./json";
 import { BadRequestError, UserNotAuthenticatedError } from "./errors";
-import { createCredential, getCredentialByName, updateCredential } from "../db/credentials";
+import { createCredential, getCredentialByID, getCredentialByName, updateCredential, type UpdateCredentialParams } from "../db/credentials";
 import { getBearerToken, validateJWT } from "../auth";
 
 export async function handlerCreateCredential(config: ApiConfig, req: BunRequest) {
@@ -17,36 +17,63 @@ export async function handlerCreateCredential(config: ApiConfig, req: BunRequest
         throw new BadRequestError("Por favor, insira um nome para a credencial, login e senha")
     }
 
-    await createCredential(config.db, {
+    const result = await createCredential(config.db, {
         credentialName: credentialName,
         login: login,
         password: password,
         userID: userID
     })
-    return respondWithJSON(200, { message: "Credencial criada com sucesso" })
+
+    if (!result) {
+         throw new BadRequestError(`Não foi possível criar a credencial`);
+    }
+
+    return respondWithJSON(200, result);
 }
+
+export async function handlerGetCredential(config: ApiConfig, req: BunRequest) {
+    const token = getBearerToken(req.headers) as string;
+    const userID = validateJWT(token, config.jwtSecret);
+    if (!userID) throw new UserNotAuthenticatedError("Invalid token");
+
+    const url = new URL(req.url);
+    const credentialName = url.searchParams.get("credentialName") || "";
+    if (!credentialName) throw new BadRequestError("Forneça o nome de uma credencial cadastrada");
+
+    const credential = await getCredentialByName(config.db, userID, credentialName);
+    if (!credential) throw new BadRequestError("Credencial não encontrada");
+
+    return respondWithJSON(200, credential);
+}
+
 
 export async function handlerUpdateCredential(config: ApiConfig, req: BunRequest) {
     const token = getBearerToken(req.headers) as string;
     const userID = validateJWT(token, config.jwtSecret);
-    if (!userID) {
-        throw new UserNotAuthenticatedError("Invalid token")
+    if (!userID) throw new UserNotAuthenticatedError("Invalid token");
+
+    type CredParams = { credentialID: string };
+    const params = req.params as unknown as CredParams | undefined;
+    const credentialID = params?.credentialID
+    if (!credentialID) throw new BadRequestError("ID inválido");
+
+    const body = (await req.json()) as UpdateCredentialParams;
+    if (!body || Object.keys(body).length === 0) {
+        throw new BadRequestError("Nenhum campo para atualizar");
     }
 
-    const { credentialName, login, password } = await req.json();
-    if (!credentialName || !login || !password) {
-        throw new BadRequestError("Por favor, insira um nome para a credencial, login e senha")
-    }
-
-    const credential = await getCredentialByName(config.db, credentialName)
+    const credential = await getCredentialByID(config.db, credentialID);
     if (!credential || credential.userID !== userID) {
-        throw new BadRequestError("Credencial não encontrada")
+        throw new BadRequestError("Credencial não encontrada");
     }
 
-    await updateCredential(config.db, {
-        credentialName: credentialName,
-        login: login,
-        password: password,
-        userID: userID
-    });
+    const { changes } = await updateCredential(config.db, credentialID, userID, body);
+    if (changes === 0) {
+        throw new BadRequestError("Nenhuma alteração aplicada");
+    }
+
+    const result = await getCredentialByID(config.db, credentialID)
+    if (!result) throw new BadRequestError("Não encontrado")
+
+    return respondWithJSON(200, result);
 }

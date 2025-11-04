@@ -41,7 +41,7 @@ export async function handlerCreateUser(config: ApiConfig, req: BunRequest) {
     }
 
     return respondWithJSON(
-        200, {
+        201, {
             id: result.id,
             created_at: result.createdAt,
             updated_at: result.updatedAt,
