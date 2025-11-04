@@ -93,12 +93,12 @@ export async function updateCredential(db: Database,id: string,userID: string,pa
         fields.push("credential_name = ?");
         values.push(params.credentialName);
     }
-    
+
     if (params.login !== undefined) {
         fields.push("login = ?");
         values.push(params.login);
     }
-    
+
     if (params.password !== undefined) {
         fields.push("password = ?");
         values.push(params.password);
@@ -119,4 +119,12 @@ export async function updateCredential(db: Database,id: string,userID: string,pa
     const result = stmt.run(values);
 
     return { changes: result.changes };
+}
+
+export async function deleteCredential(db: Database, userID: string, id: string) {
+    const sql = `
+        DELETE FROM credentials
+        WHERE user_id = ? AND id = ?
+    `;
+    return db.run(sql, [userID, id]);
 }

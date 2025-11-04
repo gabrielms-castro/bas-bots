@@ -2,7 +2,7 @@ import { password, type BunRequest } from "bun";
 import type { ApiConfig } from "../config";
 import { respondWithJSON } from "./json";
 import { BadRequestError, UserNotAuthenticatedError } from "./errors";
-import { createCredential, getCredentialByID, getCredentialByName, updateCredential, type UpdateCredentialParams } from "../db/credentials";
+import { createCredential, deleteCredential, getCredentialByID, getCredentialByName, updateCredential, type UpdateCredentialParams } from "../db/credentials";
 import { getBearerToken, validateJWT } from "../auth";
 
 export async function handlerCreateCredential(config: ApiConfig, req: BunRequest) {
@@ -76,4 +76,34 @@ export async function handlerUpdateCredential(config: ApiConfig, req: BunRequest
     if (!result) throw new BadRequestError("Não encontrado")
 
     return respondWithJSON(200, result);
+}
+
+export async function handlerDeleteCredential(config: ApiConfig, req: BunRequest) {
+    const token = getBearerToken(req.headers) as string;
+    const userID = validateJWT(token, config.jwtSecret);
+    if (!userID) throw new UserNotAuthenticatedError("Invalid token"); 
+    
+    type CredParams = { credentialID: string };
+    const params = req.params as unknown as CredParams | undefined;
+    const credentialID = params?.credentialID
+    if (!credentialID) throw new BadRequestError("ID inválido");
+    
+    const result = await deleteCredential(config.db, userID, credentialID)
+    return respondWithJSON(204, result)
+}
+
+export async function handlerGetCredentialByID(config: ApiConfig, req: BunRequest) {
+    const token = getBearerToken(req.headers) as string;
+    const userID = validateJWT(token, config.jwtSecret);
+    if (!userID) throw new UserNotAuthenticatedError("Invalid token"); 
+    
+    type CredParams = { credentialID: string };
+    const params = req.params as unknown as CredParams | undefined;
+    const credentialID = params?.credentialID
+    if (!credentialID) throw new BadRequestError("ID inválido");    
+    
+    const result = await getCredentialByID(config.db, credentialID)
+    if (!result) throw new BadRequestError("Não encontrado")
+
+    return respondWithJSON(200, result);    
 }

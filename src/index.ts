@@ -5,7 +5,7 @@ import { handlerCreateUser } from "./api/users";
 
 import spa from "./app/index.html"
 import { handlerReset } from "./api/reset";
-import { handlerCreateCredential, handlerGetCredential, handlerUpdateCredential } from "./api/credentials";
+import { handlerCreateCredential, handlerDeleteCredential, handlerGetCredential, handlerGetCredentialByID, handlerUpdateCredential } from "./api/credentials";
 Bun.serve({
     port: Number(config.port),
     development: config.platform === 'dev',
@@ -31,6 +31,8 @@ Bun.serve({
             POST: withConfig(config, handlerCreateCredential),
         },
         "/api/credentials/:credentialID": {
+            GET: withConfig(config, handlerGetCredentialByID),
+            DELETE: withConfig(config, handlerDeleteCredential),
             PATCH: withConfig(config, handlerUpdateCredential),
         },
     },
