@@ -28,7 +28,7 @@ export function makeJWT(userID: string, secret: string, expiresIn: number) {
     const payload: Payload = {
         iss: ACCESS_TOKEN_ISSUER,
         sub: userID,
-        iat: expiresAt,
+        iat: issuedAt,
         exp: expiresAt,
     };
     const token = jwt.sign(payload, secret, { algorithm: "HS256"});
