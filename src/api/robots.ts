@@ -5,18 +5,18 @@ export async function handlerCreateRobot(config: ApiConfig, req: AuthenticatedRe
     const userID = req.user.id
 }
 
-export async function listAllRobots(config: ApiConfig, req: AuthenticatedRequest) {
+export async function handlerListAllRobots(config: ApiConfig, req: AuthenticatedRequest) {
     const userID = req.user.id
 }
 
-export async function getRobotByID(config: ApiConfig, req: AuthenticatedRequest) {
+export async function handlerGetRobotByID(config: ApiConfig, req: AuthenticatedRequest) {
     const userID = req.user.id
 }
 
-export async function deleteRobot(config: ApiConfig, req: AuthenticatedRequest) {
+export async function handlerLDeleteRobot(config: ApiConfig, req: AuthenticatedRequest) {
     const userID = req.user.id
 }
 
-export async function updateRobot(config: ApiConfig, req: AuthenticatedRequest) {
+export async function handlerLUpdateRobot(config: ApiConfig, req: AuthenticatedRequest) {
     // to be implemented
 }
