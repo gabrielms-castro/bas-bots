@@ -215,4 +215,12 @@ export function reset(db: Database) {
   db.run("DELETE FROM users");
   db.run("DELETE FROM refresh_tokens");
   db.run("DELETE FROM credentials");
+  db.run("DELETE FROM user_otp_keys");
+  db.run("DELETE FROM extensions");
+  db.run("DELETE FROM robots");
+  db.run("DELETE FROM robot_instances");
+  db.run("DELETE FROM executions");
+  db.run("DELETE FROM schedules");
+  db.run("DELETE FROM execution_logs");
+  db.run("DELETE FROM notifications");
 }
