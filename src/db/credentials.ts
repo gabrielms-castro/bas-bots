@@ -70,6 +70,31 @@ export async function getCredentials(db: Database, userID: string) {
 
     return credentials;
 }
+
+export async function listCredentialsByGroupAndUser(db: Database, userID: string, groupName: string) {
+    const sql = `
+    SELECT *
+    FROM credentials
+    WHERE user_id = ?
+        AND group_name = ?
+    ORDER BY credential_name;
+    `
+    const rows = db.query<CredentialRow, [string, string]>(sql).all(userID, groupName);
+    if (!rows) return;
+
+    const credentials: Credential[] = rows.map((row) => ({
+        id: row.id,
+        createdAt: new Date(row.created_at),
+        updatedAt: new Date(row.updated_at),
+        groupName: row.group_name,
+        credentialName: row.credential_name,
+        login: row.login,
+        password: row.password,
+        userID: row.user_id           
+    }));
+
+    return credentials;
+}
 export async function getCredentialByID(db: Database, id: string) {
     const sql = `
         SELECT * 

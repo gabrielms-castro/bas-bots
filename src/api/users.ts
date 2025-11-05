@@ -8,7 +8,7 @@ import {
     type UserResponse 
 } from "../db/users";
 import { respondWithJSON } from "./json";
-import { hashPassword } from "../auth";
+import { hashPassword } from "../services/auth.service";
 
 function isEmailValid(email: string) {
     return email.match(/\w+@\w+/g)

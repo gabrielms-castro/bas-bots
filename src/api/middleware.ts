@@ -13,7 +13,7 @@ import { respondWithJSON } from "./json";
 import { 
     getBearerToken, 
     validateJWT 
-} from "../auth";
+} from "../services/auth.service";
 
 type HandlerWithConfig = (config: ApiConfig, req: BunRequest) => Promise<Response>;
 

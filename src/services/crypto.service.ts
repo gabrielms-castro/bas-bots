@@ -1,5 +1,5 @@
 import { createCipheriv, createDecipheriv, randomBytes } from "crypto";
-import { config } from "./config";
+import { config } from "../config";
 
 export function encrypt(text: string): string {
     const iv = randomBytes(16);

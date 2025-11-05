@@ -3,9 +3,9 @@ import type { ApiConfig } from "../config";
 import { respondWithJSON } from "./json";
 import { BadRequestError, UserNotAuthenticatedError } from "./errors";
 import { createCredential, deleteCredential, getCredentialByID, getCredentialByName, getCredentials, updateCredential, type UpdateCredentialParams } from "../db/credentials";
-import { getBearerToken, validateJWT } from "../auth";
+import { getBearerToken, validateJWT } from "../services/auth.service";
 import type { AuthenticatedRequest } from "./middleware";
-import { decrypt, encrypt } from "../crypto";
+import { decrypt, encrypt } from "../services/crypto.service";
 import { REFUSED } from "dns";
 
 export async function handlerCreateCredential(config: ApiConfig, req: AuthenticatedRequest) {
@@ -44,12 +44,12 @@ export async function handlerGetCredential(config: ApiConfig, req: Authenticated
     if (!credentialName) {
         const credentials = await getCredentials(config.db, userID)
         if (!credentials) throw new BadRequestError("Credencial não encontrada");
-        
+
         const decryptedCredentials = credentials.map((credential) => ({
             ...credential,
             password: decrypt(credential.password),
         }));
-        
+
         return respondWithJSON(200, decryptedCredentials);
     }
 

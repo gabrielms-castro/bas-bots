@@ -2,7 +2,7 @@ import type { BunRequest } from "bun";
 import type { ApiConfig } from "../config";
 import { BadRequestError, UserNotAuthenticatedError } from "./errors";
 import { getUserByEmail, getUserByRefreshToken, type UserResponse } from "../db/users";
-import { checkPasswordHash, getBearerToken, makeJWT, makeRefreshToken } from "../auth";
+import { checkPasswordHash, getBearerToken, makeJWT, makeRefreshToken } from "../services/auth.service";
 import { respondWithJSON } from "./json";
 import { createRefreshToken, revokeRefreshToken } from "../db/refresh-tokens";
 

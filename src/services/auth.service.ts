@@ -1,7 +1,7 @@
 
 import jwt from "jsonwebtoken";
 import type { JwtPayload } from "jsonwebtoken";
-import { UserNotAuthenticatedError } from "./api/errors";
+import { UserNotAuthenticatedError } from "../api/errors";
 import { randomBytes } from "crypto";
 
 export const ACCESS_TOKEN_ISSUER = "bas-bots-access"
