@@ -17,6 +17,11 @@ export async function handlerCreateCredential(config: ApiConfig, req: BunRequest
         throw new BadRequestError("Por favor, insira um nome para a credencial, login e senha")
     }
 
+    const queryCredential = await getCredentialByName(config.db, userID, credentialName)
+    if (queryCredential) {
+        throw new BadRequestError(`A credencial ${credentialName} já existe`)
+    }
+
     const result = await createCredential(config.db, {
         groupName: groupName,
         credentialName: credentialName,
