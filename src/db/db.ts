@@ -72,6 +72,7 @@ function autoMigrate(db: Database) {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       extension_name TEXT NOT NULL,
+      description TEXT,
       login TEXT,
       password TEXT,
       pin TEXT,
