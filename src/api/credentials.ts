@@ -5,6 +5,8 @@ import { BadRequestError, UserNotAuthenticatedError } from "./errors";
 import { createCredential, deleteCredential, getCredentialByID, getCredentialByName, getCredentials, updateCredential, type UpdateCredentialParams } from "../db/credentials";
 import { getBearerToken, validateJWT } from "../auth";
 import type { AuthenticatedRequest } from "./middleware";
+import { decrypt, encrypt } from "../crypto";
+import { REFUSED } from "dns";
 
 export async function handlerCreateCredential(config: ApiConfig, req: AuthenticatedRequest) {
 
@@ -18,12 +20,12 @@ export async function handlerCreateCredential(config: ApiConfig, req: Authentica
     if (queryCredential) {
         throw new BadRequestError(`A credencial ${credentialName} já existe`)
     }
-
+    const encryptedPassword = encrypt(password);
     const result = await createCredential(config.db, {
         groupName: groupName,
         credentialName: credentialName,
         login: login,
-        password: password,
+        password: encryptedPassword,
         userID: userID
     })
 
@@ -40,14 +42,20 @@ export async function handlerGetCredential(config: ApiConfig, req: Authenticated
     const credentialName = url.searchParams.get("credentialName");
     
     if (!credentialName) {
-        const credentials = await getCredentials(config.db, userID);
+        const credentials = await getCredentials(config.db, userID)
         if (!credentials) throw new BadRequestError("Credencial não encontrada");
-            return respondWithJSON(200, credentials);
+        
+        const decryptedCredentials = credentials.map((credential) => ({
+            ...credential,
+            password: decrypt(credential.password),
+        }));
+        
+        return respondWithJSON(200, decryptedCredentials);
     }
 
     const credential = await getCredentialByName(config.db, userID, credentialName);
     if (!credential) throw new BadRequestError("Credencial não encontrada");
-
+    credential.password = decrypt(credential.password)
     return respondWithJSON(200, credential);
 }
 
@@ -104,5 +112,7 @@ export async function handlerGetCredentialByID(config: ApiConfig, req: Authentic
     const result = await getCredentialByID(config.db, credentialID)
     if (!result) throw new BadRequestError("Não encontrado")
     if (result.userID !== userID) throw new BadRequestError("Credencial nao encontrada")
+
+    result.password = decrypt(result.password)
     return respondWithJSON(200, result);    
 }
