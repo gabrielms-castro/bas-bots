@@ -1,17 +1,46 @@
 import type { BunRequest } from "bun";
 import type { ApiConfig } from "../config";
+
 import { 
     BadRequestError, 
     NotFoundError, 
     UserForbiddenError, 
     UserNotAuthenticatedError 
 } from "./errors";
+
 import { respondWithJSON } from "./json";
+
+import { 
+    getBearerToken, 
+    validateJWT 
+} from "../auth";
 
 type HandlerWithConfig = (config: ApiConfig, req: BunRequest) => Promise<Response>;
 
+export type AuthenticatedRequest = BunRequest & {
+    user: {
+        id: string;
+    }
+}
+
 export function withConfig(config: ApiConfig, handler: HandlerWithConfig) {
     return (req: BunRequest) => handler(config, req)
+}
+
+export function withAuth(handler: (config: ApiConfig, req: AuthenticatedRequest) => Promise<Response>) {
+    return async (config: ApiConfig, req: BunRequest) => {
+        const token = getBearerToken(req.headers) as string;
+        const userID = validateJWT(token, config.jwtSecret);
+        
+        if (!userID) {
+            throw new UserNotAuthenticatedError("Token inválido");
+        }
+        
+        // Anexar user ao request
+        (req as AuthenticatedRequest).user = { id: userID };
+        
+        return handler(config, req as AuthenticatedRequest);
+    };
 }
 
 export function errorHandlingMiddleware(config: ApiConfig, err: unknown): Response {

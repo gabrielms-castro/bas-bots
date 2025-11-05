@@ -1,9 +1,18 @@
-import { handlerLogin, handlerRefreshToken, handlerRevoke } from "./api/auth";
-import { errorHandlingMiddleware, withConfig } from "./api/middleware";
-import { config } from "./config";
-import { handlerCreateUser } from "./api/users";
-
 import spa from "./app/index.html"
+
+import { handlerLogin, handlerRefreshToken, handlerRevoke } from "./api/auth";
+import { 
+    errorHandlingMiddleware, 
+    withAuth, 
+    withConfig
+} from "./api/middleware";
+
+import { 
+    config, 
+    type ApiConfig 
+} from "./config";
+
+import { handlerCreateUser } from "./api/users";
 import { handlerReset } from "./api/reset";
 import { 
     handlerCreateCredential, 
@@ -12,8 +21,6 @@ import {
     handlerGetCredentialByID, 
     handlerUpdateCredential 
 } from "./api/credentials";
-
-
 
 Bun.serve({
     port: Number(config.port),
@@ -36,13 +43,13 @@ Bun.serve({
             POST: withConfig(config, handlerReset),
         },
         "/api/credentials": {
-            GET: withConfig(config, handlerGetCredential),
-            POST: withConfig(config, handlerCreateCredential),
+            GET: withConfig(config, withAuth(handlerGetCredential)),
+            POST: withConfig(config, withAuth(handlerCreateCredential)),
         },
         "/api/credentials/:credentialID": {
-            GET: withConfig(config, handlerGetCredentialByID),
-            DELETE: withConfig(config, handlerDeleteCredential),
-            PATCH: withConfig(config, handlerUpdateCredential),
+            GET: withConfig(config, withAuth(handlerGetCredentialByID)),
+            DELETE: withConfig(config, withAuth(handlerDeleteCredential)),
+            PATCH: withConfig(config, withAuth(handlerUpdateCredential)),
         },
     },
     error(err) {

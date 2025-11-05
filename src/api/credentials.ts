@@ -4,14 +4,11 @@ import { respondWithJSON } from "./json";
 import { BadRequestError, UserNotAuthenticatedError } from "./errors";
 import { createCredential, deleteCredential, getCredentialByID, getCredentialByName, getCredentials, updateCredential, type UpdateCredentialParams } from "../db/credentials";
 import { getBearerToken, validateJWT } from "../auth";
+import type { AuthenticatedRequest } from "./middleware";
 
-export async function handlerCreateCredential(config: ApiConfig, req: BunRequest) {
-    const token = getBearerToken(req.headers) as string;
-    const userID = validateJWT(token, config.jwtSecret);
-    if (!userID) {
-        throw new UserNotAuthenticatedError("Invalid token")
-    }
+export async function handlerCreateCredential(config: ApiConfig, req: AuthenticatedRequest) {
 
+    const userID = req.user.id
     const { groupName, credentialName, login, password } = await req.json();
     if (!groupName ||!credentialName || !login || !password) {
         throw new BadRequestError("Por favor, insira um nome para a credencial, login e senha")
@@ -37,11 +34,8 @@ export async function handlerCreateCredential(config: ApiConfig, req: BunRequest
     return respondWithJSON(200, result);
 }
 
-export async function handlerGetCredential(config: ApiConfig, req: BunRequest) {
-    const token = getBearerToken(req.headers) as string;
-    const userID = validateJWT(token, config.jwtSecret);
-    if (!userID) throw new UserNotAuthenticatedError("Invalid token");
-
+export async function handlerGetCredential(config: ApiConfig, req: AuthenticatedRequest) {
+    const userID = req.user.id
     const url = new URL(req.url);
     const credentialName = url.searchParams.get("credentialName");
     
@@ -58,10 +52,8 @@ export async function handlerGetCredential(config: ApiConfig, req: BunRequest) {
 }
 
 
-export async function handlerUpdateCredential(config: ApiConfig, req: BunRequest) {
-    const token = getBearerToken(req.headers) as string;
-    const userID = validateJWT(token, config.jwtSecret);
-    if (!userID) throw new UserNotAuthenticatedError("Invalid token");
+export async function handlerUpdateCredential(config: ApiConfig, req: AuthenticatedRequest) {
+    const userID = req.user.id
 
     type CredParams = { credentialID: string };
     const params = req.params as unknown as CredParams | undefined;
@@ -89,10 +81,8 @@ export async function handlerUpdateCredential(config: ApiConfig, req: BunRequest
     return respondWithJSON(200, result);
 }
 
-export async function handlerDeleteCredential(config: ApiConfig, req: BunRequest) {
-    const token = getBearerToken(req.headers) as string;
-    const userID = validateJWT(token, config.jwtSecret);
-    if (!userID) throw new UserNotAuthenticatedError("Invalid token"); 
+export async function handlerDeleteCredential(config: ApiConfig, req: AuthenticatedRequest) {
+    const userID = req.user.id
     
     type CredParams = { credentialID: string };
     const params = req.params as unknown as CredParams | undefined;
@@ -103,10 +93,8 @@ export async function handlerDeleteCredential(config: ApiConfig, req: BunRequest
     return respondWithJSON(204, result)
 }
 
-export async function handlerGetCredentialByID(config: ApiConfig, req: BunRequest) {
-    const token = getBearerToken(req.headers) as string;
-    const userID = validateJWT(token, config.jwtSecret);
-    if (!userID) throw new UserNotAuthenticatedError("Invalid token"); 
+export async function handlerGetCredentialByID(config: ApiConfig, req: AuthenticatedRequest) {
+    const userID = req.user.id
     
     type CredParams = { credentialID: string };
     const params = req.params as unknown as CredParams | undefined;
@@ -115,6 +103,6 @@ export async function handlerGetCredentialByID(config: ApiConfig, req: BunReques
     
     const result = await getCredentialByID(config.db, credentialID)
     if (!result) throw new BadRequestError("Não encontrado")
-
+    if (result.userID !== userID) throw new BadRequestError("Credencial nao encontrada")
     return respondWithJSON(200, result);    
 }
