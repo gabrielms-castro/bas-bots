@@ -1,12 +1,9 @@
-import { password, type BunRequest } from "bun";
 import type { ApiConfig } from "../config";
 import { respondWithJSON } from "./json";
-import { BadRequestError, UserNotAuthenticatedError } from "./errors";
+import { BadRequestError } from "./errors";
 import { createCredential, deleteCredential, getCredentialByID, getCredentialByName, getCredentials, updateCredential, type UpdateCredentialParams } from "../db/credentials";
-import { getBearerToken, validateJWT } from "../services/auth.service";
 import type { AuthenticatedRequest } from "./middleware";
 import { decrypt, encrypt } from "../services/crypto.service";
-import { REFUSED } from "dns";
 
 export async function handlerCreateCredential(config: ApiConfig, req: AuthenticatedRequest) {
 

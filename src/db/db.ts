@@ -76,6 +76,7 @@ function autoMigrate(db: Database) {
       login TEXT,
       password TEXT,
       pin TEXT,
+      extension_url TEXT,
       user_id TEXT NOT NULL,
       is_active BOOLEAN DEFAULT 1,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,

@@ -1,32 +1,16 @@
 import spa from "./app/index.html"
-
-import { handlerLogin, handlerRefreshToken, handlerRevoke } from "./api/auth";
-import { 
-    errorHandlingMiddleware, 
-    withAuth, 
-    withConfig
-} from "./api/middleware";
-
-import { 
-    config, 
-    type ApiConfig 
-} from "./config";
-
+import { config } from "./config";
 import { handlerCreateUser } from "./api/users";
 import { handlerReset } from "./api/reset";
-import { 
-    handlerCreateCredential, 
-    handlerDeleteCredential, 
-    handlerGetCredential, 
-    handlerGetCredentialByID, 
-    handlerUpdateCredential 
-} from "./api/credentials";
-
+import { handlerLogin, handlerRefreshToken, handlerRevoke } from "./api/auth";
+import { errorHandlingMiddleware, withAuth, withConfig } from "./api/middleware";
+import { handlerCreateCredential, handlerDeleteCredential, handlerGetCredential, handlerGetCredentialByID, handlerUpdateCredential } from "./api/credentials";
 import { handlerCreateExecution, handlerDeleteExecution, handlerGetExecutionByID, handlerListAllExecutions, handlerUpdateExecution } from "./api/executions";
 import { handlerCreateSchedule, handlerGetScheduleByID, handlerLDeleteSchedule, handlerListAllSchedules, handlerUpdateSchedule } from "./api/schedules";
 import { handlerCreateRobot, handlerGetRobotByID, handlerLDeleteRobot, handlerListAllRobots, handlerUpdateRobot } from "./api/robots";
 import { handlerCreateRobotInstance, handlerDeleteRobotInstance, handlerGetRobotInstanceByID, handlerListAllRobotInstancesByUserID, handlerUpdateRobotInstance } from "./api/robot-instances";
 import { handlerCreateExecutionLog, handlerDeleteExecutionLog, handlerDeleteExecutionLogsByExecutionID, handlerGetExecutionLogByID } from "./api/execution-logs";
+import { handlerCreateExtension, handlerDeleteExtension, handlerGetExtensionByID, handlerListExtensions, handlerUpdateExtension } from "./api/extensions";
 
 Bun.serve({
     port: Number(config.port),
@@ -63,6 +47,17 @@ Bun.serve({
             GET: withConfig(config, withAuth(handlerGetCredentialByID)),
             DELETE: withConfig(config, withAuth(handlerDeleteCredential)),
             PATCH: withConfig(config, withAuth(handlerUpdateCredential)),
+        },
+
+        "/api/extensions": {
+            GET: withConfig(config, withAuth(handlerListExtensions)),
+            POST: withConfig(config, withAuth(handlerCreateExtension)),
+        },
+        
+        "/api/extensions/:extensionID": {
+            GET: withConfig(config, withAuth(handlerGetExtensionByID)),
+            PATCH: withConfig(config, withAuth(handlerUpdateExtension)),
+            DELETE: withConfig(config, withAuth(handlerDeleteExtension)),
         },
 
         "/api/robots": {
