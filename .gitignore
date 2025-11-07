@@ -1,5 +1,5 @@
 *.db
 .env
 assets/
-samples/
 node_modules/
+extensions/
