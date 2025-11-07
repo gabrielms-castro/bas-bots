@@ -4,7 +4,7 @@ import { handlerCreateUser } from "./api/users";
 import { handlerReset } from "./api/reset";
 import { handlerLogin, handlerRefreshToken, handlerRevoke } from "./api/auth";
 import { errorHandlingMiddleware, withAuth, withConfig } from "./api/middleware";
-import { handlerCreateCredential, handlerDeleteCredential, handlerGetCredential, handlerGetCredentialByID, handlerUpdateCredential } from "./api/credentials";
+import { handlerCreateCredential, handlerDeleteCredential, handlerGetCredentialByID, handlerListAllCredentialsByUserID, handlerUpdateCredential } from "./api/credentials";
 import { handlerCreateExecution, handlerDeleteExecution, handlerGetExecutionByID, handlerListAllExecutions, handlerUpdateExecution } from "./api/executions";
 import { handlerCreateSchedule, handlerGetScheduleByID, handlerLDeleteSchedule, handlerListAllSchedules, handlerUpdateSchedule } from "./api/schedules";
 import { handlerCreateRobot, handlerGetRobotByID, handlerLDeleteRobot, handlerListAllRobots, handlerUpdateRobot } from "./api/robots";
@@ -39,7 +39,7 @@ Bun.serve({
         },
 
         "/api/credentials": {
-            GET: withConfig(config, withAuth(handlerGetCredential)), // Aceita credentialName como searchParams
+            GET: withConfig(config, withAuth(handlerListAllCredentialsByUserID)), // Aceita credentialName como searchParams
             POST: withConfig(config, withAuth(handlerCreateCredential)),
         },
 
