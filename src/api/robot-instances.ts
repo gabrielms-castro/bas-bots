@@ -115,5 +115,5 @@ export async function handlerDeleteRobotInstance(config: ApiConfig, req: Authent
     const deleted = await deleteRobotInstance(config.db, instanceID, userID);
     if (!deleted) throw new InternalServerError("Failed to delete robot instance");
 
-    return new Response(null, { status: 204 });
+    return respondWithJSON(204, {})
 }
