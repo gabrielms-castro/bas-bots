@@ -144,7 +144,7 @@ export async function handlerDeleteNotification(
   const deleted = await deleteNotification(config.db, notificationID, userID);
   if (!deleted) throw new InternalServerError('Failed to delete notification');
 
-  return new Response(null, { status: 204 });
+  return respondWithJSON(204, {});
 }
 
 export async function handlerUpdateNotification(
@@ -184,10 +184,8 @@ export async function handlerMarkNotificationAsRead(
   req: AuthenticatedRequest,
 ) {
   const userID = req.user.id;
-  const url = new URL(req.url);
-  const pathParts = url.pathname.split('/');
-  const notificationID = pathParts[pathParts.length - 3]; // /api/notifications/:id/read
 
+  const { notificationID } = req.params as { notificationID: string };
   if (!notificationID) throw new BadRequestError('Notification ID is required');
 
   const notification = await getNotificationByID(config.db, notificationID);
