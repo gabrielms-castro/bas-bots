@@ -20,6 +20,7 @@ import {
 } from './errors';
 
 import { respondWithJSON } from './json';
+import { ExecutionService } from '../services/execution.service';
 
 export async function handlerCreateExecution(
   config: ApiConfig,
@@ -28,27 +29,15 @@ export async function handlerCreateExecution(
   const userID = req.user.id;
   const body = await req.json();
 
-  if (!body.robotInstanceID || !body.executionType)
-    throw new BadRequestError('robotInstanceID and executionType are required');
-
-  if (!['manual', 'scheduled', 'retry'].includes(body.executionType))
-    throw new BadRequestError(
-      "executionType must be 'manual', 'scheduled', or 'retry'",
-    );
-  if (body.executionType === 'scheduled' && !body.scheduleID)
-    throw new BadRequestError(
-      'scheduleID is required for scheduled executions',
-    );
-
-  const params: CreateExecutionParams = {
+  const params = {
     robotInstanceID: body.robotInstanceID,
     userID: userID,
     executionType: body.executionType,
     scheduleID: body.scheduleID || null,
-    status: body.status || 'pending',
   };
 
-  const execution = await createExecution(config.db, params);
+  const executionService = new ExecutionService(config);
+  const execution = await executionService.createExecution(params);
 
   return respondWithJSON(201, execution);
 }
