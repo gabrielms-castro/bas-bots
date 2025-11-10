@@ -1,14 +1,13 @@
-import { Database } from "bun:sqlite";
+import { Database } from 'bun:sqlite';
 
 export function newDatabase(pathToDB: string): Database {
-  
   const db = new Database(pathToDB);
-  autoMigrate(db)
-  return db
+  autoMigrate(db);
+  return db;
 }
 
 function autoMigrate(db: Database) {
-  console.log("Starting migration...");
+  console.log('Starting migration...');
   const usersTable = `
       CREATE TABLE IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
@@ -51,7 +50,7 @@ function autoMigrate(db: Database) {
     );
   `;
   db.run(credentialsTable);
-  
+
   const userOTPKeysTable = `
     CREATE TABLE IF NOT EXISTS user_otp_keys (
       id TEXT PRIMARY KEY,
@@ -210,19 +209,19 @@ function autoMigrate(db: Database) {
   `;
   db.run(notificationsTable);
 
-  console.log("Database migrations: success!");
+  console.log('Database migrations: success!');
 }
 
 export function reset(db: Database) {
-  db.run("DELETE FROM users");
-  db.run("DELETE FROM refresh_tokens");
-  db.run("DELETE FROM credentials");
-  db.run("DELETE FROM user_otp_keys");
-  db.run("DELETE FROM extensions");
-  db.run("DELETE FROM robots");
-  db.run("DELETE FROM robot_instances");
-  db.run("DELETE FROM executions");
-  db.run("DELETE FROM schedules");
-  db.run("DELETE FROM execution_logs");
-  db.run("DELETE FROM notifications");
+  db.run('DELETE FROM users');
+  db.run('DELETE FROM refresh_tokens');
+  db.run('DELETE FROM credentials');
+  db.run('DELETE FROM user_otp_keys');
+  db.run('DELETE FROM extensions');
+  db.run('DELETE FROM robots');
+  db.run('DELETE FROM robot_instances');
+  db.run('DELETE FROM executions');
+  db.run('DELETE FROM schedules');
+  db.run('DELETE FROM execution_logs');
+  db.run('DELETE FROM notifications');
 }
