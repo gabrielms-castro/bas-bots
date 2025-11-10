@@ -82,6 +82,17 @@ Bun.serve({
             PATCH: withConfig(config, withAuth(handlerUpdateRobotInstance)),
         },
 
+        "/api/schedules": {
+            GET: withConfig(config, withAuth(handlerListAllSchedules)),
+            POST: withConfig(config, withAuth(handlerCreateSchedule)),
+        },
+
+        "/api/schedules/:scheduleID": {
+            GET: withConfig(config, withAuth(handlerGetScheduleByID)),
+            DELETE: withConfig(config, withAuth(handlerLDeleteSchedule)),
+            PATCH: withConfig(config, withAuth(handlerUpdateSchedule)),
+        },
+        
         "/api/executions": {
             GET: withConfig(config, withAuth(handlerListAllExecutions)), // Aceita status ou robotInstanceID como searchParams
             POST: withConfig(config, withAuth(handlerCreateExecution)), // execução criada envia um evento parao service de robo (?)
@@ -93,16 +104,6 @@ Bun.serve({
             PATCH: withConfig(config, withAuth(handlerUpdateExecution)),
         },
 
-        "/api/schedules": {
-            GET: withConfig(config, withAuth(handlerListAllSchedules)),
-            POST: withConfig(config, withAuth(handlerCreateSchedule)),
-        },
-
-        "/api/schedules/:scheduleID": {
-            GET: withConfig(config, withAuth(handlerGetScheduleByID)),
-            DELETE: withConfig(config, withAuth(handlerLDeleteSchedule)),
-            PATCH: withConfig(config, withAuth(handlerUpdateSchedule)),
-        },
 
         "/api/execution-logs": {
             GET: withConfig(config, withAuth(handlerListAllExecutions)), // ?executionID=... ou ?logLevel=...
