@@ -1,15 +1,15 @@
 import type { ApiConfig } from "../config";
 import type { AuthenticatedRequest } from "./middleware";
 import {
-  createExecution,
-  listExecutionsByUserID,
-  listExecutionsByRobotInstanceID,
-  listExecutionsByStatus,
-  getExecutionByID,
-  updateExecution,
-  deleteExecution,
-  type CreateExecutionParams,
-  type UpdateExecutionParams,
+    createExecution,
+    listExecutionsByUserID,
+    listExecutionsByRobotInstanceID,
+    listExecutionsByStatus,
+    getExecutionByID,
+    updateExecution,
+    deleteExecution,
+    type CreateExecutionParams,
+    type UpdateExecutionParams,
 } from "../db/executions";
 
 import { 
@@ -28,6 +28,7 @@ export async function handlerCreateExecution(config: ApiConfig, req: Authenticat
     if (!body.robotInstanceID || !body.executionType) throw new BadRequestError("robotInstanceID and executionType are required");
 
     if (!["manual", "scheduled", "retry"].includes(body.executionType)) throw new BadRequestError("executionType must be 'manual', 'scheduled', or 'retry'");
+    if (body.executionType === "scheduled" && !body.scheduleID) throw new BadRequestError("scheduleID is required for scheduled executions");
 
     const params: CreateExecutionParams = {
       robotInstanceID: body.robotInstanceID,
