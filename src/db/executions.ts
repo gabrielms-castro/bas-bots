@@ -99,7 +99,7 @@ export async function createExecution(db: Database,params: CreateExecutionParams
             retry_count
         )
         VALUES (?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, 0)    
-    `
+    `;
     const stmt = db.prepare(sql);
     stmt.run(
         newExecutionID,
@@ -140,7 +140,7 @@ export async function listExecutionsByStatus(db: Database, userID: string, statu
     const sql = `
         SELECT *
         FROM executions
-        WHERE user_id = ? ANDstatus = ?
+        WHERE user_id = ? AND status = ?
         ORDER BY created_at DESC
     `;
     const stmt = db.prepare(sql);
