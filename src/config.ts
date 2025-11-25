@@ -10,6 +10,9 @@ export type ApiConfig = {
   assetsRoot: string;
   encryptionAlgorithm: string;
   encryptionKey: string;
+  prestoEmail: string;
+  prestoSenha: string;
+  prestoPin: string
 };
 
 const pathToDB = EnvOrThrow('DB_PATH');
@@ -20,6 +23,9 @@ const filePathRoot = EnvOrThrow('FILEPATH_ROOT');
 const assetsRoot = EnvOrThrow('ASSETS_ROOT');
 const encryptionAlgorithm = EnvOrThrow('ENCRYPTION_ALGORITHM');
 const encryptionKey = EnvOrThrow('ENCRYPTION_KEY');
+const prestoEmail = EnvOrThrow('PRESTO_EMAIL');
+const prestoSenha = EnvOrThrow('PRESTO_SENHA');
+const prestoPin = EnvOrThrow('PRESTO_PIN');
 const db = newDatabase(pathToDB);
 
 export const config: ApiConfig = {
@@ -31,6 +37,9 @@ export const config: ApiConfig = {
   assetsRoot: assetsRoot,
   encryptionAlgorithm: encryptionAlgorithm,
   encryptionKey: encryptionKey,
+  prestoEmail: prestoEmail,
+  prestoSenha: prestoSenha,
+  prestoPin: prestoPin
 };
 
 function EnvOrThrow(key: string): string {

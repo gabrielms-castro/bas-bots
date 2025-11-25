@@ -16,6 +16,7 @@
   "dependencies": {
     "cron-parser": "^5.4.0",
     "jsonwebtoken": "^9.0.2",
+    "node-html-parser": "^7.0.1",
     "playwright": "^1.56.1"
   }
 }
